@@ -9,14 +9,24 @@ class Booking extends Model
 {
     use HasFactory;
 
-    // Daftarkan semua kolom yang boleh diisi secara massal
     protected $fillable = [
         'user_id',
         'schedule_id',
         'seat_number',
         'total_price',
+        'payment_method',
         'payment_status',
+        'paid_at',
         'booking_status',
-        'payment_method'
     ];
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+<<<<<<< HEAD
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -15,10 +16,18 @@ class PasswordResetLinkController extends Controller
      * Display the password reset link request view.
      */
     public function create(): View
+=======
+use Illuminate\Http\Request;
+
+class PasswordResetLinkController extends Controller
+{
+    public function create()
+>>>>>>> origin/fitur-booking-user
     {
         return view('auth.forgot-password');
     }
 
+<<<<<<< HEAD
     /**
      * Handle an incoming password reset link request.
      *
@@ -43,3 +52,14 @@ class PasswordResetLinkController extends Controller
                         ->withErrors(['email' => __($status)]);
     }
 }
+=======
+    public function store(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        
+        // Untuk simulasi tugas kuliah, kita kasih pesan sukses aja dulu
+        // Karena buat kirim email beneran butuh setting Mailtrap/SMTP
+        return back()->with('status', 'Link reset password sudah dikirim ke email (simulasi).');
+    }
+}
+>>>>>>> origin/fitur-booking-user

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+<<<<<<< HEAD
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,10 +20,20 @@ class RegisteredUserController extends Controller
      * Display the registration view.
      */
     public function create(): View
+=======
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class RegisteredUserController extends Controller
+{
+    public function create()
+>>>>>>> origin/fitur-booking-user
     {
         return view('auth.register');
     }
 
+<<<<<<< HEAD
     /**
      * Handle an incoming registration request.
      *
@@ -34,6 +45,14 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+=======
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed'],
+>>>>>>> origin/fitur-booking-user
         ]);
 
         $user = User::create([
@@ -42,6 +61,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+<<<<<<< HEAD
         event(new Registered($user));
 
         Auth::login($user);
@@ -49,3 +69,10 @@ class RegisteredUserController extends Controller
         return redirect(route('dashboard', absolute: false));
     }
 }
+=======
+        Auth::login($user);
+
+        return redirect('/dashboard');
+    }
+}
+>>>>>>> origin/fitur-booking-user

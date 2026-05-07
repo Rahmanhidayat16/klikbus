@@ -139,7 +139,7 @@
                         <p class="text-gray-600 font-medium text-sm">
                             Don't have an account?&nbsp;
                             <a href="{{ route('register') }}" class="text-blue-600 font-extrabold hover:underline">
-                                Sign In
+                                register
                             </a>
                         </p>
                     </div>

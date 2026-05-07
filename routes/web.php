@@ -16,5 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+use App\Http\Controllers\BusController;
 
+Route::get('/bus', [BusController::class, 'index'])->name('bus.index');
 require __DIR__.'/auth.php';

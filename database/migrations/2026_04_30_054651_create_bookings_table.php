@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->integer('seat_number');
             $table->decimal('total_price', 10, 2);
-            $table->string('payment_method', 10);
+            $table->string('payment_method');
             $table->string('payment_status', 10);
             $table->timestamp('paid_at')->nullable();
             $table->enum('booking_status', ['pending', 'confirmed', 'cancelled'])->default('pending');

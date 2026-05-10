@@ -23,15 +23,22 @@ class BusController extends Controller
     // 3. Simpan Bus Baru
     public function store(Request $request)
     {
+        $pesan = [
+            'bus_name.required' => 'Nama bus wajib diisi.',
+            'type.required' => 'Tipe bus wajib diisi.',
+            'total_seats.required' => 'Jumlah kursi wajib diisi.',
+            'total_seats.numeric' => 'Jumlah kursi harus berupa angka.',
+        ];
+
         $request->validate([
             'bus_name' => 'required',
             'type' => 'required',
             'total_seats' => 'required|numeric',
-        ]);
+        ], $pesan);
 
         Bus::create($request->all());
 
-        return redirect()->route('bus.index')->with('success', 'Bus berhasil ditambah!');
+        return redirect()->route('bus.index')->with('success', 'Data bus berhasil ditambahkan.');
     }
 
     // 4. Tampilkan Form Edit
@@ -44,16 +51,23 @@ class BusController extends Controller
     // 5. Update Data Bus
     public function update(Request $request, $id)
     {
+        $pesan = [
+            'bus_name.required' => 'Nama bus wajib diisi.',
+            'type.required' => 'Tipe bus wajib diisi.',
+            'total_seats.required' => 'Jumlah kursi wajib diisi.',
+            'total_seats.numeric' => 'Jumlah kursi harus berupa angka.',
+        ];
+
         $request->validate([
             'bus_name' => 'required',
             'type' => 'required',
             'total_seats' => 'required|numeric',
-        ]);
+        ], $pesan);
 
         $bus = Bus::findOrFail($id);
         $bus->update($request->all());
 
-        return redirect()->route('bus.index')->with('success', 'Data bus berhasil diperbarui!');
+        return redirect()->route('bus.index')->with('success', 'Data bus berhasil diperbarui.');
     }
 
     // 6. Hapus Bus
@@ -62,6 +76,6 @@ class BusController extends Controller
         $bus = Bus::findOrFail($id);
         $bus->delete();
 
-        return redirect()->route('bus.index')->with('success', 'Bus berhasil dihapus!');
+        return redirect()->route('bus.index')->with('success', 'Data bus berhasil dihapus.');
     }
 }

@@ -28,4 +28,9 @@ class Schedule extends Model
     {
         return $this->belongsTo(Route::class);
     }
+    // Relasi ke Booking (Satu jadwal bisa dibooking banyak orang)
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

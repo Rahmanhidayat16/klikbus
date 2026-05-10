@@ -14,8 +14,14 @@ class Bus extends Model
 
     // 2. Daftarkan kolom yang boleh diisi (Fillable)
     protected $fillable = [
-    'bus_name',    // Bukan nama_bus
-    'type',        // Bukan tipe
-    'total_seats', // Bukan kapasitas
-];
+        'bus_name',    // Bukan nama_bus
+        'type',        // Bukan tipe
+        'total_seats', // Bukan kapasitas
+    ];
+
+    // 3. Relasi ke Schedule (Satu bus punya banyak jadwal)
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }

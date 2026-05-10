@@ -1,40 +1,42 @@
-<h1>Daftar Jadwal Bus Lampung</h1>
+<x-app-layout>
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white p-8 shadow rounded-lg">
+                <h2 class="text-xl font-bold mb-6">Pemesanan Tiket KlikBus</h2>
 
-@if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
-@endif
-
-<table border="1" cellpadding="10" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Nama Bus</th>
-            <th>Tipe</th>
-            <th>Rute (Asal - Tujuan)</th>
-            <th>Waktu Berangkat</th>
-            <th>Harga</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($schedules as $sch)
-        <tr>
-            <td>{{ $sch->bus->bus_name }}</td>
-            <td>{{ $sch->bus->type }}</td>
-            <td>{{ $sch->route->departure }} - {{ $sch->route->destination }}</td>
-            <td>{{ $sch->departure_time }}</td>
-            <td>Rp {{ number_format($sch->route->base_price, 0, ',', '.') }}</td>
-            <td>
                 <form action="{{ route('bookings.store') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="schedule_id" value="{{ $sch->id }}">
-                    <input type="number" name="seat_number" placeholder="No Kursi" required style="width: 60px;">
-                    <button type="submit">Pesan</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+                    <div class="mb-6">
+                        <label class="block font-bold mb-2">Pilih Rute & Jadwal:</label>
+                        <select name="schedule_id" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                            @foreach($schedules as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->bus->bus_name }} | {{ $item->route->departure }} - {{ $item->route->destination }} (Rp {{ number_format($item->route->base_price, 0, ',', '.') }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-<br>
-<a href="{{ route('dashboard') }}">Kembali ke Dashboard</a>
+                    <div class="mb-6">
+    <label class="block font-bold mb-4">Pilih Kursi (Bisa lebih dari satu):</label>
+    
+    @php 
+        $maxSeats = $schedules->first()->bus->total_seats ?? 40; 
+    @endphp
+
+    <div class="grid grid-cols-5 gap-3 bg-gray-50 p-4 rounded-lg">
+        @for ($i = 1; $i <= $maxSeats; $i++)
+            <label class="flex items-center p-2 border rounded cursor-pointer hover:bg-blue-50">
+                <input type="checkbox" name="seat_numbers[]" value="{{ $i }}" class="rounded text-blue-600">
+                <span class="ml-2 text-sm">{{ $i }}</span>
+            </label>
+        @endfor
+    </div>
+</div>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">Lanjut ke Pembayaran</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

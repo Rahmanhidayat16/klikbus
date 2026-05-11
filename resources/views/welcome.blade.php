@@ -15,12 +15,12 @@
             <source src="{{ asset('videos/klikbus lampung2.mp4') }}" type="video/mp4">
         </video>
 
-        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 z-10 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-blue-900/60 via-blue-900/30 to-slate-900/80 z-10 pointer-events-none"></div>
 
         <div class="container mx-auto px-6 relative z-20 flex flex-col items-center text-center -mt-20">
             
-            <h1 class="text-7xl md:text-9xl font-black text-yellow-400 drop-shadow-[0_5px_10px_rgba(0,0,0,0.9)] mb-4 tracking-tighter">
-                KlikBus
+            <h1 class="text-7xl md:text-9xl font-black text-yellow-400 drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)] mb-4 tracking-tighter">
+                KlikBus.
             </h1>
             
             <h2 class="text-2xl md:text-5xl font-bold text-white mb-8 italic drop-shadow-lg">
@@ -33,12 +33,12 @@
 
             <div class="flex flex-col md:flex-row gap-6 mb-24">
                 <a href="{{ route('login') }}" 
-                   class="px-12 py-6 bg-blue-600 border border-blue-400 hover:bg-blue-700 text-white font-black text-xl rounded-3xl shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition transform hover:scale-105 active:scale-95">
+                   class="px-12 py-5 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.4)] transition transform hover:-translate-y-1 active:scale-95 border-2 border-blue-500">
                     Mulai Pesan Tiket 🚌
                 </a>
                 
                 <a href="{{ route('rute.index') }}" 
-                   class="px-12 py-6 bg-black/40 backdrop-blur-md text-white font-bold text-xl rounded-3xl border border-white/50 hover:bg-black/60 transition shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+                   class="px-12 py-5 bg-white/20 backdrop-blur-md text-white font-bold text-lg rounded-full border border-white/50 hover:bg-white/30 transition shadow-lg transform hover:-translate-y-1 active:scale-95">
                     Lihat Rute
                 </a>
             </div>

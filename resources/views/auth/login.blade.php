@@ -1,165 +1,123 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <script src="https://cdn.tailwindcss.com"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Login - KlikBus</title>
-
-    <!-- Font Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+    
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="antialiased font-[Poppins]">
+<body class="antialiased min-h-screen relative flex items-center justify-center p-6">
 
-    <div class="min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat p-4"
-         style="background-image: url('{{ asset('images/buss.png') }}');">
+    <!-- BACKGROUND IMAGE (Terang agar Siger terlihat) -->
+    <div class="fixed inset-0 z-0 bg-[url('/images/buss.png')] bg-cover bg-center bg-no-repeat"></div>
+    <!-- Gradien putih di kiri agar form mudah dibaca, memudar ke kanan -->
+    <div class="fixed inset-0 z-0 bg-gradient-to-r from-white/95 via-white/60 to-transparent backdrop-blur-[1px]"></div>
 
-        <!-- Overlay biar teks lebih jelas -->
-        <div class="absolute inset-0 bg-gradient-to-r from-sky-100/40 to-blue-200/20 backdrop-blur-[1px]"></div>
+    <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-start gap-8 lg:gap-16">
 
-        <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
+        <!-- CARD LOGIN (KIRI) -->
+        <div class="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-white/60 relative overflow-hidden">
+            
+            <!-- Dekorasi background card -->
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-50 rounded-full opacity-50 pointer-events-none"></div>
 
-            <!-- CARD LOGIN -->
-            <div class="w-full md:w-[450px] bg-white/85 backdrop-blur-xl p-10 rounded-[45px] shadow-2xl border border-white/40">
-
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-3xl font-extrabold text-slate-800">
-                        Mulai Perjalanan
-                    </h2>
-
-                    <a href="/" class="text-gray-400 hover:text-gray-600 transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12">
-                            </path>
-                        </svg>
+            <div class="relative z-10">
+                <div class="mb-8">
+                    <a href="{{ route('home') }}" class="inline-flex items-center gap-3 group mb-8">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-400 flex items-center justify-center shadow-sm group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-bus text-blue-900"></i>
+                        </div>
+                        <span class="text-2xl font-black italic text-slate-800 leading-none">KlikBus.</span>
                     </a>
+                    <h2 class="text-2xl font-black text-slate-800 mb-2">Selamat Datang! 👋</h2>
+                    <p class="text-slate-500 text-sm font-medium">Masuk ke akun Anda untuk memesan tiket.</p>
                 </div>
 
-                <p class="text-slate-500 mb-8 font-medium">
-                    Masuk untuk memesan tiket Anda
-                </p>
-
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
 
                     <!-- EMAIL -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-semibold text-slate-600 mb-2">
-                            Email
-                        </label>
-
-                        <input
-                            id="email"
-                            type="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
-                            placeholder="nama@email.com"
-                            class="w-full px-5 py-4 rounded-2xl bg-white/80 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-500 transition shadow-sm outline-none"
-                        />
-
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Email</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="nama@email.com"
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none" />
+                        </div>
                         @if($errors->has('email'))
-                            <p class="text-red-500 text-xs mt-2">
-                                {{ $errors->first('email') }}
-                            </p>
+                            <p class="text-red-500 text-xs font-bold mt-2 flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('email') }}</p>
                         @endif
                     </div>
 
                     <!-- PASSWORD -->
-                    <div class="mb-4">
-
+                    <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="block text-sm font-semibold text-slate-600">
-                                Kata Sandi
-                            </label>
-
-                            <a href="{{ route('password.request') }}"
-                               class="text-xs text-sky-600 font-semibold hover:underline">
-                                Lupa?
-                            </a>
+                            <label class="block text-xs font-black uppercase tracking-widest text-slate-400">Kata Sandi</label>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Lupa sandi?</a>
+                            @endif
                         </div>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••"
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none" />
+                        </div>
+                    </div>
 
-                        <input
-                            id="password"
-                            type="password"
-                            name="password"
-                            required
-                            autocomplete="current-password"
-                            placeholder="••••••••"
-                            class="w-full px-5 py-4 rounded-2xl bg-white/80 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-500 transition shadow-sm outline-none"
-                        />
+                    <!-- REMEMBER ME -->
+                    <div class="flex items-center">
+                        <input id="remember_me" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500 bg-slate-50" name="remember">
+                        <label for="remember_me" class="ml-2 text-sm font-medium text-slate-500 cursor-pointer">Ingat saya</label>
                     </div>
 
                     <!-- BUTTON -->
-                    <button
-                        type="submit"
-                        class="w-full bg-sky-600 hover:bg-sky-700 text-white font-extrabold py-5 rounded-2xl shadow-xl transition active:scale-95 mt-8 text-lg"
-                    >
-                        Masuk Sekarang
+                    <button type="submit" class="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 text-sm">
+                        Masuk Sekarang <i class="fa-solid fa-arrow-right"></i>
                     </button>
-
-                    <p class="text-center text-sm text-slate-600 mt-10">
-                        Belum punya akun?
-
-                        <a href="{{ route('register') }}"
-                           class="text-sky-600 font-bold hover:underline">
-                            Daftar
-                        </a>
-                    </p>
-
                 </form>
+
+                <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                    <p class="text-sm font-medium text-slate-500">
+                        Belum punya akun? 
+                        <a href="{{ route('register') }}" class="text-blue-600 font-black hover:text-blue-800 transition-colors">Daftar di sini</a>
+                    </p>
+                </div>
             </div>
-
-            <!-- HERO TEXT -->
-            <div class="hidden md:block w-full md:w-1/2 text-left relative"
-                 style="top: -90px; left: -100px;">
-
-                <!-- LOGO -->
-                <h1 class="text-[105px] font-black text-yellow-400 leading-none tracking-tighter drop-shadow-xl">
-                    KlikBus
-                </h1>
-
-                <!-- SUBTITLE -->
-                <h2 class="text-5xl font-bold text-sky-700 mb-8">
-                    Selamat Datang!
-                </h2>
-
-                <!-- DESCRIPTION -->
-<p class="text-2xl font-medium leading-relaxed max-w-xl" style="color: #0369a1 !important;">
-    Perjalanan antar kota di Lampung 
-</p>
-<p class="text-2xl font-medium leading-relaxed max-w-xl" style="color: #0369a1 !important;">
-    jadi lebih mudah, nyaman, dan cepat
-</p>
-<p class="text-2xl font-medium leading-relaxed max-w-xl" style="color: #0369a1 !important;">
-    bersama KlikBus.
-</p>
-                <!-- BADGES -->
-<div class="flex flex-wrap gap-4 mt-12">
-
-    <span class="px-6 py-3 rounded-full text-sm font-extrabold border border-blue-400/40 shadow-lg" 
-          style="background-color: rgba(11, 92, 172, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: #dfdfe6 !important;">
-        ✓ Mudah & Cepat
-    </span>
-
-    <span class="px-6 py-3 rounded-full text-sm font-extrabold border border-blue-400/40 shadow-lg" 
-          style="background-color: rgba(11, 92, 172, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: #e8e8ec !important;">
-        ✓ Aman & Terpercaya
-    </span>
-
-</div>
-
-            </div>
-
         </div>
+
+        <!-- HERO TEXT (KANAN) -->
+        <div class="hidden lg:flex w-full lg:w-1/2 flex-col justify-center text-left space-y-6 lg:-mt-32 relative z-10">
+            
+            <h1 class="text-6xl font-black text-slate-800 drop-shadow-md leading-tight">
+                Mulai Perjalanan<br>
+                <span class="text-blue-700">Lebih Mudah</span>
+            </h1>
+
+            <p class="text-xl text-slate-700 font-bold max-w-sm leading-relaxed drop-shadow-sm">
+                Pesan tiket bus ke seluruh wilayah Lampung dengan cepat, aman, dan nyaman.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-start gap-4 pt-4">
+                <span class="px-5 py-2.5 rounded-full text-sm font-extrabold bg-white/70 backdrop-blur-md text-slate-800 shadow-sm border border-white/50">
+                    <i class="fa-solid fa-check text-blue-600 mr-1"></i> Praktis & Cepat
+                </span>
+                <span class="px-5 py-2.5 rounded-full text-sm font-extrabold bg-white/70 backdrop-blur-md text-slate-800 shadow-sm border border-white/50">
+                    <i class="fa-solid fa-check text-blue-600 mr-1"></i> Aman Terpercaya
+                </span>
+            </div>
+            
+        </div>
+
     </div>
 
 </body>

@@ -1,324 +1,221 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>KlikBus Admin Dashboard</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Sora:wght@400;600;700&display=swap');
+@extends('layouts.dashboard')
 
-    :root {
-      --color-border: #e5e7eb;
-      --color-text-primary: #1a1a2e;
-      --color-text-secondary: #4b5563;
-      --color-text-tertiary: #9ca3af;
-      --bg-main: #f7f6f3;
-      --accent-blue: #3b82f6;
-    }
+@section('title', 'Dashboard - KlikBus')
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { 
-      width: 100vw; height: 100vh; 
-      overflow: hidden; 
-      font-family: 'DM Sans', sans-serif; 
-      background: #000; 
-    }
+@section('content')
+    {{-- HEADER --}}
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <p class="text-blue-600 font-bold text-sm mb-1">
+                Selamat Datang 👋
+            </p>
+            <h1 class="text-3xl font-black text-slate-900 mb-1">
+                Halo, {{ Auth::user()->name }}
+            </h1>
+            <p class="text-slate-500 text-sm">
+                Mau pergi ke mana hari ini?
+            </p>
+        </div>
 
-    .kb-shell {
-      display: flex;
-      width: 100vw;
-      height: 100vh;
-      background: var(--bg-main);
-    }
-
-    /* SIDEBAR */
-    .kb-sidebar {
-      width: 280px;
-      flex-shrink: 0;
-      background: #fff;
-      border-right: 1px solid var(--color-border);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .kb-logo {
-      padding: 30px 24px;
-      border-bottom: 1px solid var(--color-border);
-      display: flex; align-items: center; gap: 12px;
-    }
-
-    .kb-logo-icon {
-      width: 40px; height: 40px;
-      background: #1a1a2e; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 18px;
-    }
-
-    .kb-logo-text { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 700; color: #1a1a2e; }
-
-    .kb-nav { padding: 15px 10px; flex: 1; overflow-y: auto; }
-    .kb-nav-label { font-size: 13px; font-weight: 600; color: var(--color-text-tertiary); text-transform: uppercase; padding: 12px 15px 8px; }
-    
-    a.kb-nav-item {
-      text-decoration: none;
-    }
-
-    .kb-nav-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 18px; border-radius: 12px;
-      font-size: 18px; color: var(--color-text-secondary);
-      cursor: pointer; margin-bottom: 6px; transition: 0.2s;
-    }
-    .kb-nav-item.active { background: #1a1a2e; color: #fff; font-weight: 500; }
-    .kb-nav-item:hover:not(.active) { background: #f9fafb; }
-
-    .kb-badge {
-      margin-left: auto; background: #eff6ff; color: #3b82f6;
-      font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
-    }
-    .active .kb-badge { background: rgba(255,255,255,0.2); color: #fff; }
-
-    /* SIDEBAR FOOTER */
-    .kb-sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid var(--color-border);
-      display: flex; align-items: center; gap: 12px;
-    }
-    .kb-avatar {
-      width: 42px; height: 42px;
-      background: var(--accent-blue); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-weight: 600;
-    }
-    .kb-profile-info { flex: 1; overflow: hidden; }
-    .kb-profile-name { font-size: 15px; font-weight: 600; color: #1a1a2e; }
-    .kb-logout-btn { color: #ef4444; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 8px; }
-
-    /* MAIN CONTENT */
-    .kb-main { flex: 1; display: flex; flex-direction: column; height: 100vh; }
-
-    .kb-topbar {
-      background: #fff; height: 75px; padding: 0 40px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--color-border); flex-shrink: 0;
-    }
-    .kb-topbar-title { font-family: 'Sora', sans-serif; font-size: 25px; font-weight: 600; }
-
-    .kb-content { padding: 25px 40px; display: flex; flex-direction: column; gap: 20px; flex: 1; overflow: hidden; }
-
-    /* STATS */
-    .kb-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; flex-shrink: 0; }
-    .kb-stat-card { background: #fff; padding: 22px; border-radius: 18px; border: 1px solid var(--color-border); }
-    .kb-stat-val { font-family: 'Sora', sans-serif; font-size: 42px; font-weight: 700; margin: 8px 0 2px; }
-    .kb-stat-lbl { font-size: 16px; color: var(--color-text-secondary); }
-
-    /* CHARTS */
-    .kb-charts-row { display: grid; grid-template-columns: 1fr 450px; gap: 20px; height: 340px; flex-shrink: 0; }
-    .kb-card { background: #fff; border-radius: 18px; padding: 20px; border: 1px solid var(--color-border); display: flex; flex-direction: column; min-height: 0; }
-    .kb-card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
-
-    /* TABLE SCROLLABLE */
-    .kb-table-container { background: #fff; border-radius: 18px; padding: 25px; border: 1px solid var(--color-border); flex: 1; overflow: hidden; display: flex; flex-direction: column; }
-    .kb-table-scroll { flex: 1; overflow-y: auto; margin-top: 10px; }
-    .kb-table { width: 100%; border-collapse: collapse; }
-    .kb-table thead th { 
-      position: sticky; top: 0; background: #fff; z-index: 10;
-      text-align: left; padding: 12px 15px; font-size: 15px; color: var(--color-text-tertiary); border-bottom: 2px solid var(--color-border);
-    }
-    .kb-table td { padding: 16px 15px; font-size: 17px; border-bottom: 1px solid var(--color-border); }
-    
-    .kb-status { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-    .s-confirmed { background: #f0fdf4; color: #16a34a; }
-    .s-pending { background: #fffbeb; color: #d97706; }
-
-    .ic-blue { background: #eff6ff; color: #3b82f6; }
-    .ic-green { background: #f0fdf4; color: #16a34a; }
-    .ic-amber { background: #fffbeb; color: #d97706; }
-    .ic-purple { background: #faf5ff; color: #7c3aed; }
-  </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-</head>
-<body>
-
-<div class="kb-shell">
-  <aside class="kb-sidebar">
-    <div class="kb-logo">
-      <div class="kb-logo-icon"><i class="ti ti-bus"></i></div>
-      <div class="kb-logo-text">KlikBus</div>
-    </div>
-    <nav class="kb-nav">
-      <div class="kb-nav-label">Utama</div>
-
-      <a href="{{ route('admin.dashboard') }}" class="kb-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-        <i class="ti ti-layout-dashboard"></i> Dashboard
-      </a>
-
-      <a href="{{ route('admin.bus.index') }}" class="kb-nav-item {{ request()->routeIs('admin.bus.*') ? 'active' : '' }}">
-        <i class="ti ti-bus"></i> Kelola Bus <span class="kb-badge">12</span>
-      </a>
-
-      <a href="{{ route('admin.routes.index') }}" class="kb-nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
-        <i class="ti ti-route"></i> Atur Rute <span class="kb-badge">8</span>
-      </a>
-
-      <a href="{{ route('admin.schedules.index') }}" class="kb-nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
-        <i class="ti ti-calendar-event"></i> Jadwal
-      </a>
-
-      <div class="kb-nav-label">Laporan & Keuangan</div>
-
-      <a href="{{ route('admin.reports.bookings') }}" class="kb-nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-        <i class="ti ti-file-analytics"></i> Laporan Pemesanan
-      </a>
-
-      <a href="#" class="kb-nav-item">
-        <i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">124</span>
-      </a>
-
-      <div class="kb-nav-label">Sistem</div>
-
-      <a href="#" class="kb-nav-item">
-        <i class="ti ti-users"></i> Pengguna
-      </a>
-
-      <a href="#" class="kb-nav-item">
-        <i class="ti ti-settings"></i> Pengaturan
-      </a>
-
-    </nav>
-
-    <div class="kb-sidebar-footer">
-      <div class="kb-avatar">AD</div>
-      <div class="kb-profile-info">
-        <div class="kb-profile-name">Admin KlikBus</div>
-        <div class="kb-profile-role">Super Admin</div>
-      </div>
-      <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-        @csrf
-        <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none;">
-          <i class="ti ti-logout"></i>
-        </button>
-      </form>
-    </div>
-  </aside>
-
-  <main class="kb-main">
-    <div class="kb-topbar">
-      <div class="kb-topbar-title">DASHBOARD ADMIN KLIKBUS</div>
-      <div style="display:flex; align-items:center; gap:20px;">
-        <div style="font-size: 14px; color: #666;"><i class="ti ti-calendar"></i> Mei 2026</div>
-        <i class="ti ti-bell" style="font-size: 22px; cursor:pointer;"></i>
-      </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('profile.edit') }}"
+               class="bg-white border border-slate-200 px-4 py-2.5 rounded-xl font-bold text-slate-700 text-sm hover:bg-slate-50 shadow-sm flex items-center">
+                <i class="fa-solid fa-user-pen mr-2 text-blue-600"></i>
+                Edit Profil
+            </a>
+            <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-blue-200">
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            </div>
+        </div>
     </div>
 
-    <div class="kb-content">
-      <div class="kb-stats">
-        <div class="kb-stat-card">
-          <div class="ic-blue" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-bus"></i></div>
-          <div class="kb-stat-val">12</div>
-          <div class="kb-stat-lbl">Total Armada Bus</div>
-        </div>
-        <div class="kb-stat-card">
-          <div class="ic-green" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-route"></i></div>
-          <div class="kb-stat-val">8</div>
-          <div class="kb-stat-lbl">Rute Aktif</div>
-        </div>
-        <div class="kb-stat-card">
-          <div class="ic-amber" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-ticket"></i></div>
-          <div class="kb-stat-val">124</div>
-          <div class="kb-stat-lbl">Pesanan Hari Ini</div>
-        </div>
-        <div class="kb-stat-card">
-          <div class="ic-purple" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-cash"></i></div>
-          <div class="kb-stat-val">Rp 48jt</div>
-          <div class="kb-stat-lbl">Pendapatan</div>
-        </div>
-      </div>
+    {{-- SEARCH BOX --}}
+    <section class="bg-blue-600 rounded-[2rem] p-8 relative overflow-hidden mb-10 shadow-lg shadow-blue-200/50">
+        <div class="absolute right-[-60px] bottom-[-60px] w-64 h-64 rounded-full bg-blue-500 opacity-30"></div>
 
-      <div class="kb-charts-row">
-        <div class="kb-card">
-          <div class="kb-card-title">Tren Penjualan Tiket</div>
-          <div style="flex:1; position:relative;"><canvas id="lineChart"></canvas></div>
+        <div class="flex items-center gap-4 mb-6 relative z-10">
+            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white text-xl">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div>
+                <h2 class="text-white text-2xl font-black mb-1">
+                    Cari Tiket Bus
+                </h2>
+                <p class="text-blue-100 text-sm">
+                    Cari rute dan pesan tiket langsung.
+                </p>
+            </div>
         </div>
-        <div class="kb-card">
-          <div class="kb-card-title">Rute Terpopuler</div>
-          <div style="flex:1; position:relative;"><canvas id="donutChart"></canvas></div>
+
+        <form action="{{ route('dashboard') }}" method="GET" class="grid grid-cols-1 lg:grid-cols-4 gap-4 relative z-10">
+            {{-- ASAL --}}
+            <div class="bg-white rounded-2xl px-4 py-3 flex items-center gap-3">
+                <i class="fa-solid fa-location-dot text-blue-600"></i>
+                <div class="flex-1">
+                    <label class="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                        Kota Asal
+                    </label>
+                    <input type="text" name="asal" value="{{ request('asal') }}" placeholder="Bandar Lampung"
+                           class="w-full text-sm font-bold text-slate-800 outline-none bg-transparent">
+                </div>
+            </div>
+
+            {{-- TUJUAN --}}
+            <div class="bg-white rounded-2xl px-4 py-3 flex items-center gap-3">
+                <i class="fa-solid fa-paper-plane text-blue-600"></i>
+                <div class="flex-1">
+                    <label class="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                        Kota Tujuan
+                    </label>
+                    <input type="text" name="tujuan" value="{{ request('tujuan') }}" placeholder="Metro"
+                           class="w-full text-sm font-bold text-slate-800 outline-none bg-transparent">
+                </div>
+            </div>
+
+            {{-- TANGGAL --}}
+            <div class="bg-white rounded-2xl px-4 py-3 flex items-center gap-3 relative">
+                <i class="fa-solid fa-calendar text-blue-600"></i>
+                <div class="flex-1">
+                    <label class="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                        Tanggal
+                    </label>
+                    <input type="date" name="tanggal" value="{{ request('tanggal') }}"
+                           class="w-full text-sm font-bold text-slate-800 outline-none bg-transparent relative z-10">
+                </div>
+                <i class="fa-solid fa-calendar-days absolute right-4 text-slate-300"></i>
+            </div>
+
+            {{-- BUTTON --}}
+            <button type="submit"
+                    class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 rounded-2xl font-black text-sm transition-all active:scale-95 py-3 lg:py-0">
+                CARI JADWAL
+            </button>
+        </form>
+    </section>
+
+    {{-- RUTE POPULER --}}
+    <section class="mb-10">
+        <h2 class="text-xl font-black text-slate-900 mb-1">
+            Rute Populer
+        </h2>
+        <p class="text-slate-500 text-sm mb-5">
+            Rute favorit pengguna KlikBus.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-all">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                    POPULER
+                </span>
+                <h3 class="text-lg font-black text-slate-900 mt-4 leading-tight">
+                    Pringsewu → Bandar Lampung
+                </h3>
+                <p class="text-slate-400 text-xs mt-2">
+                    Klik untuk langsung pilih tanggal.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-all">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                    FAVORIT
+                </span>
+                <h3 class="text-lg font-black text-slate-900 mt-4 leading-tight">
+                    Bandar Lampung → Bakauheni
+                </h3>
+                <p class="text-slate-400 text-xs mt-2">
+                    Jadwal tersedia setiap hari.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-all">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                    CEPAT
+                </span>
+                <h3 class="text-lg font-black text-slate-900 mt-4 leading-tight">
+                    Metro → Bandar Lampung
+                </h3>
+                <p class="text-slate-400 text-xs mt-2">
+                    Cocok untuk perjalanan harian.
+                </p>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <div class="kb-table-container">
-        <div class="kb-card-title">Pesanan Terbaru</div>
-        <div class="kb-table-scroll">
-          <table class="kb-table">
-            <thead>
-              <tr>
-                <th>ID Pesanan</th>
-                <th>Penumpang</th>
-                <th>Rute</th>
-                <th>Harga</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>#KB-2087</td><td>Rizky Aditya</td><td>Rajabasa → Bakauheni</td><td>Rp 45.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2086</td><td>Siti Nurhaliza</td><td>Rajabasa → Metro</td><td>Rp 25.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2085</td><td>Budi Santoso</td><td>Rajabasa → Unit 2</td><td>Rp 85.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2084</td><td>Dewi Kusuma</td><td>Rajabasa → Kotabumi</td><td>Rp 60.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2083</td><td>Ahmad Fauzi</td><td>Rajabasa → Pringsewu</td><td>Rp 30.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2082</td><td>Eko Prasetyo</td><td>Rajabasa → Kalianda</td><td>Rp 40.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2081</td><td>Fitri Handayani</td><td>Rajabasa → Way Kanan</td><td>Rp 95.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2080</td><td>Gilang Ramadhan</td><td>Rajabasa → Mesuji</td><td>Rp 110.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2079</td><td>Hesti Purwanti</td><td>Rajabasa → Tulang Bawang</td><td>Rp 80.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2078</td><td>Indra Wijaya</td><td>Rajabasa → Liwa</td><td>Rp 120.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-            </tbody>
-          </table>
+    {{-- BUS TERSEDIA --}}
+    <section class="mb-10">
+        <div class="flex justify-between items-center mb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-900 mb-1">
+                    Bus Tersedia
+                </h2>
+                <p class="text-slate-500 text-sm">
+                    Jadwal bus sesuai pencarian Anda.
+                </p>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <p class="text-slate-400 font-bold text-xs uppercase">
+                    Total Jadwal
+                </p>
+                <h3 class="text-xl font-black text-blue-600">
+                    {{ $schedules->count() }}
+                </h3>
+            </div>
         </div>
-      </div>
-    </div>
-  </main>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-  new Chart(document.getElementById('lineChart'), {
-    type: 'line',
-    data: {
-      labels: ['Sen','Sel','Rab','Kam','Jum','Sab','Min'],
-      datasets: [{
-        data: [18, 24, 21, 30, 28, 42, 38],
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59,130,246,0.05)',
-        tension: 0.4,
-        fill: true
-      }]
-    },
-    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-  });
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+            @forelse($schedules as $schedule)
+            <div class="bg-white rounded-3xl p-6 border border-blue-50 shadow-sm hover:-translate-y-1 transition-all h-full flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-5">
+                        <div>
+                            <span class="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">
+                                {{ $schedule->bus->type }}
+                            </span>
+                            <h3 class="text-lg font-black text-slate-900 mt-3 leading-tight">
+                                {{ $schedule->bus->bus_name }}
+                            </h3>
+                            <p class="text-slate-500 text-sm font-bold mt-1">
+                                {{ $schedule->route->departure }} → {{ $schedule->route->destination }}
+                            </p>
+                        </div>
+                    </div>
 
-  new Chart(document.getElementById('donutChart'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Bakauheni', 'Metro', 'Kotabumi', 'Lainnya'],
-      datasets: [{
-        data: [45, 30, 20, 29],
-        backgroundColor: ['#3b82f6','#6366f1','#10b981','#e5e7eb'],
-        borderWidth: 2,
-        borderColor: '#ffffff'
-      }]
-    },
-    options: { 
-      maintainAspectRatio: false, 
-      cutout: '70%', 
-      layout: {
-        padding: { top: 10, bottom: 30, left: 10, right: 10 }
-      },
-      plugins: { 
-        legend: { 
-          position: 'bottom',
-          labels: { padding: 15, boxWidth: 12, font: { size: 12 } }
-        } 
-      } 
-    }
-  });
-</script>
-</body>
-</html>
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <div class="bg-slate-50 rounded-2xl p-3">
+                            <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Keberangkatan</p>
+                            <h4 class="text-sm font-black text-slate-900">
+                                {{ \Carbon\Carbon::parse($schedule->departure_time)->translatedFormat('d M Y') }}
+                            </h4>
+                            <p class="text-[10px] font-bold text-slate-500 mt-0.5">
+                                Pukul {{ \Carbon\Carbon::parse($schedule->departure_time)->format('H:i') }} WIB
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-3">
+                            <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Status</p>
+                            <h4 class="text-sm font-black text-green-600 capitalize">
+                                {{ $schedule->status }}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ route('bookings.index', ['schedule_id' => $schedule->id]) }}"
+                   class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl text-center font-bold text-sm transition-all active:scale-95">
+                    Pesan Sekarang
+                </a>
+            </div>
+            @empty
+            <div class="col-span-full">
+                <div class="bg-white rounded-3xl p-10 text-center border border-dashed border-slate-300">
+                    <i class="fa-solid fa-bus text-4xl text-slate-300 mb-4"></i>
+                    <h3 class="text-lg font-black text-slate-700 mb-2">
+                        Jadwal Tidak Ditemukan
+                    </h3>
+                    <p class="text-slate-400 text-sm">
+                        Coba ubah kota asal, tujuan, atau tanggal keberangkatan.
+                    </p>
+                </div>
+            </div>
+            @endforelse
+        </div>
+    </section>
+@endsection

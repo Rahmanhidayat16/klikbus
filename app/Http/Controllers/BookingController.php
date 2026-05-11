@@ -11,14 +11,27 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class BookingController extends Controller
 {
     // 1. Tampilkan daftar jadwal (Kalau perlu)
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard')->with('error', 'Admin tidak bisa pesan tiket.');
         }
 
         $schedules = Schedule::with(['bus', 'route'])->get();
-        return view('bookings.index', compact('schedules'));
+        if ($schedules->isEmpty()) {
+            return redirect()->route('dashboard')->with('error', 'Belum ada jadwal tersedia.');
+        }
+
+        $selectedScheduleId = $request->schedule_id ?? $schedules->first()->id;
+        $selectedSchedule = $schedules->where('id', $selectedScheduleId)->first();
+        
+        // Ambil kursi yang sudah di-booking untuk jadwal ini
+        $bookedSeats = Booking::where('schedule_id', $selectedScheduleId)
+            ->whereIn('payment_status', ['paid', 'pending'])
+            ->pluck('seat_number')
+            ->toArray();
+
+        return view('bookings.index', compact('schedules', 'selectedSchedule', 'bookedSeats'));
     }
 
     // 2. Simpan pesanan awal (Status: Pending)
@@ -107,5 +120,28 @@ class BookingController extends Controller
         $qrcode = QrCode::size(200)->generate('CLICKBUS-' . $booking->id);
 
         return view('bookings.show', compact('booking', 'qrcode', 'seats'));
+    }
+    public function history()
+    {
+        // Narik data booking punya user yang login + relasinya (biar gak Rp 0)
+        $bookings = Auth::user()->bookings()
+                    ->with(['schedule.route', 'schedule.bus'])
+                    ->latest()
+                    ->get();
+
+        return view('bookings.history', compact('bookings'));
+    }
+
+    // 6. Tiket Aktif (Belum Berangkat)
+    public function activeTickets()
+    {
+        // Narik data booking yang statusnya paid atau pending
+        $bookings = Auth::user()->bookings()
+                    ->whereIn('payment_status', ['paid', 'pending'])
+                    ->with(['schedule.route', 'schedule.bus'])
+                    ->latest()
+                    ->get();
+
+        return view('bookings.active', compact('bookings'));
     }
 }

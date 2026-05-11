@@ -17,13 +17,17 @@ class AuthenticatedSessionController extends Controller
     }
 
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
+    $request->session()->regenerate();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+    // Ganti 'RouteServiceProvider::HOME' jadi logika ini:
+    if ($request->user()->role === 'admin') {
+        return redirect()->intended(route('admin.dashboard'));
     }
+
+    return redirect()->intended(route('dashboard'));
+}
 
     public function destroy(Request $request): RedirectResponse
     {

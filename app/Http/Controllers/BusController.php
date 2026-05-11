@@ -9,10 +9,10 @@ class BusController extends Controller
 {
     // 1. Tampilkan Semua Bus
     public function index()
-    {
-        $semua_bus = Bus::all();
-        return view('bus.index', compact('semua_bus'));
-    }
+{
+    $semua_bus = Bus::all();
+    return view('admin.bus.index', compact('semua_bus')); // Rahman taruh file di resources/views/admin/bus/
+}
 
     // 2. Tampilkan Form Tambah
     public function create()
@@ -38,7 +38,7 @@ class BusController extends Controller
 
         Bus::create($request->all());
 
-        return redirect()->route('bus.index')->with('success', 'Data bus berhasil ditambahkan.');
+        return redirect()->route('admin.bus.index')->with('success', '...');
     }
 
     // 4. Tampilkan Form Edit
@@ -67,7 +67,7 @@ class BusController extends Controller
         $bus = Bus::findOrFail($id);
         $bus->update($request->all());
 
-        return redirect()->route('bus.index')->with('success', 'Data bus berhasil diperbarui.');
+       return redirect()->route('admin.bus.index')->with('success', '...');
     }
 
     // 6. Hapus Bus
@@ -76,6 +76,6 @@ class BusController extends Controller
         $bus = Bus::findOrFail($id);
         $bus->delete();
 
-        return redirect()->route('bus.index')->with('success', 'Data bus berhasil dihapus.');
+        return redirect()->route('admin.bus.index')->with('success', '...');
     }
 }

@@ -11,21 +11,18 @@ class ScheduleController extends Controller
 {
     // 1. Tampilkan Semua Jadwal
     public function index()
-    {
-        // Pakai 'with' biar website nggak lemot narik relasi data (Eager Loading)
-        $semua_jadwal = Schedule::with(['bus', 'route'])->get();
-        return view('schedules.index', compact('semua_jadwal'));
-    }
+{
+    $semua_jadwal = Schedule::with(['bus', 'route'])->get();
+    return view('admin.schedules.index', compact('semua_jadwal')); 
+}
 
     // 2. Tampilkan Form Tambah
     public function create()
-    {
-        $buses = Bus::all();     // Lempar data bus buat dropdown
-        $routes = Route::all();  // Lempar data rute buat dropdown
-        
-        return view('schedules.create', compact('buses', 'routes'));
-    }
-
+{
+    $buses = Bus::all();
+    $routes = Route::all();
+    return view('admin.schedules.create', compact('buses', 'routes'));
+}
     // 3. Simpan Jadwal Baru
     public function store(Request $request)
     {
@@ -45,7 +42,7 @@ class ScheduleController extends Controller
 
         Schedule::create($request->all());
 
-        return redirect()->route('schedules.index')->with('success', 'Data jadwal berhasil ditambahkan.');
+       return redirect()->route('admin.schedules.index')->with('success', '...');
     }
 
     // 4. Tampilkan Form Edit
@@ -77,7 +74,7 @@ class ScheduleController extends Controller
         $jadwal = Schedule::findOrFail($id);
         $jadwal->update($request->all());
 
-        return redirect()->route('schedules.index')->with('success', 'Data jadwal berhasil diperbarui.');
+        return redirect()->route('admin.schedules.index')->with('success', '...');
     }
 
     // 6. Hapus Jadwal
@@ -86,6 +83,6 @@ class ScheduleController extends Controller
         $jadwal = Schedule::findOrFail($id);
         $jadwal->delete();
 
-        return redirect()->route('schedules.index')->with('success', 'Data jadwal berhasil dihapus.');
+        return redirect()->route('admin.schedules.index')->with('success', '...');
     }
 }

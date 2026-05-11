@@ -11,8 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
+    $middleware->redirectTo(
+        guests: '/login',      // Kalau belum login, ke sini
+        users: '/rute',       // Kalau SUDAH login, biarin tetep bisa liat rute (atau ganti ke dashboard)
+    );
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

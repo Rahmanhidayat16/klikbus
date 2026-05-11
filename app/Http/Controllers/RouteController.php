@@ -9,10 +9,10 @@ class RouteController extends Controller
 {
     // 1. Tampilkan Semua Rute
     public function index()
-    {
-        $semua_rute = Route::all();
-        return view('routes.index', compact('semua_rute'));
-    }
+{
+    $semua_rute = Route::all();
+    return view('admin.routes.index', compact('semua_rute')); 
+}
 
     // 2. Tampilkan Form Tambah
     public function create()
@@ -38,7 +38,7 @@ class RouteController extends Controller
 
         Route::create($request->all());
 
-        return redirect()->route('routes.index')->with('success', 'Data rute berhasil ditambahkan.');
+        return redirect()->route('admin.routes.index')->with('success', '...');
     }
 
     // 4. Tampilkan Form Edit
@@ -67,7 +67,7 @@ class RouteController extends Controller
         $rute = Route::findOrFail($id);
         $rute->update($request->all());
 
-        return redirect()->route('routes.index')->with('success', 'Data rute berhasil diperbarui.');
+        return redirect()->route('admin.routes.index')->with('success', '...');
     }
 
     // 6. Hapus Rute
@@ -76,6 +76,6 @@ class RouteController extends Controller
         $rute = Route::findOrFail($id);
         $rute->delete();
 
-        return redirect()->route('routes.index')->with('success', 'Data rute berhasil dihapus.');
+        return redirect()->route('admin.routes.index')->with('success', '...');
     }
 }

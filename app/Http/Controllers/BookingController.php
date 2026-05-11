@@ -10,12 +10,18 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BookingController extends Controller
 {
+    // 1. Tampilkan daftar jadwal (Kalau perlu)
     public function index()
     {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard')->with('error', 'Admin tidak bisa pesan tiket.');
+        }
+
         $schedules = Schedule::with(['bus', 'route'])->get();
         return view('bookings.index', compact('schedules'));
     }
 
+    // 2. Simpan pesanan awal (Status: Pending)
     public function store(Request $request)
     {
         $request->validate([
@@ -27,7 +33,6 @@ class BookingController extends Controller
         $schedule = Schedule::with('route')->findOrFail($request->schedule_id);
         $lastId = null;
 
-        // Simpan tiap kursi jadi satu baris di database
         foreach ($request->seat_numbers as $seat) {
             $booking = Booking::create([
                 'user_id' => Auth::id(),
@@ -44,51 +49,62 @@ class BookingController extends Controller
         return redirect()->route('bookings.checkout', $lastId);
     }
 
+    // 3. Halaman Bayar (Sudah digabung & Aman)
     public function checkout($id)
     {
         $booking = Booking::with(['schedule.bus', 'schedule.route'])->findOrFail($id);
 
-        // Ambil semua kursi yang dipesan barengan (status pending)
+        // Security Check: Biar nggak bisa stalk tiket orang lain
+        if ($booking->user_id !== Auth::id()) {
+            abort(403, 'Waduh, mau ngintip pesanan siapa nih? Gak boleh ya!');
+        }
+
+        // Ambil semua kursi yang dipesan dalam satu sesi (status pending)
         $allBookings = Booking::where('user_id', Auth::id())
                               ->where('schedule_id', $booking->schedule_id)
                               ->where('payment_status', 'pending')
                               ->get();
 
         $total = $allBookings->sum('total_price');
+        
+        // Kita kirim dua versi: string buat tampilan, array buat logic kalau perlu
+        $seats_text = $allBookings->pluck('seat_number')->implode(', '); 
         $seats = $allBookings->pluck('seat_number')->toArray();
 
-        return view('bookings.checkout', compact('booking', 'total', 'seats'));
+        return view('bookings.checkout', compact('booking', 'total', 'seats', 'seats_text'));
     }
 
+    // 4. Proses Bayar (Simulasi)
     public function processPayment(Request $request, $id)
     {
         $booking = Booking::findOrFail($id);
 
-        // Update SEMUA tiket yang dipesan barengan jadi PAID
         Booking::where('user_id', Auth::id())
                 ->where('schedule_id', $booking->schedule_id)
                 ->where('payment_status', 'pending')
                 ->update([
                     'payment_status' => 'paid',
                     'paid_at' => now(),
-                    'payment_method' => $request->payment_method ?? 'VA' // Pakai kode pendek biar gak error data long
+                    'payment_method' => $request->payment_method ?? 'Transfer Bank'
                 ]);
 
         return redirect()->route('bookings.show', $booking->id);
     }
 
+    // 5. Tampilan E-Tiket Akhir
     public function show($id)
     {
         $booking = Booking::with(['user', 'schedule.bus', 'schedule.route'])->findOrFail($id);
         
-        // Ambil list kursi yang sudah dibayar
+        // Ambil list kursi yang sudah PAID
         $seats = Booking::where('user_id', $booking->user_id)
                         ->where('schedule_id', $booking->schedule_id)
                         ->where('payment_status', 'paid')
                         ->pluck('seat_number')
                         ->toArray();
 
-        $qrcode = QrCode::size(200)->generate('TICKET-' . $booking->id);
+        // Generate QR Code otomatis
+        $qrcode = QrCode::size(200)->generate('CLICKBUS-' . $booking->id);
 
         return view('bookings.show', compact('booking', 'qrcode', 'seats'));
     }

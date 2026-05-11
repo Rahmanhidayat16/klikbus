@@ -1,106 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KlikBus - Reservasi Tiket Lampung</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Lobster+Two:ital,wght@1,700&family=Nunito+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KlikBus - Tiket Bus Lampung Terpercaya</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        .font-brand { font-family: 'Righteous', cursive; }
-        .font-welcome { font-family: 'Lobster Two', cursive; }
-        body { font-family: 'Nunito Sans', sans-serif; }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeUp 0.8s ease-out forwards; }
-    </style>
 </head>
-<body class="antialiased bg-gray-100 overflow-x-hidden">
+<body class="antialiased m-0 p-0 overflow-x-hidden">
     
-    <div class="relative min-h-screen w-full flex items-center justify-center py-12 px-4">
+    <div class="relative h-screen w-screen flex flex-col items-center justify-center overflow-hidden bg-black">
         
-        <div class="fixed inset-0 z-0">
-            <img src="{{ asset('images/bus.png') }}" 
-                 class="w-full h-full object-cover filter blur-[2px] brightness-90 scale-105" 
-                 alt="Background">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-black/40"></div>
-        </div>
+        <video autoplay loop muted playsinline class="absolute inset-0 min-w-full min-h-full w-full h-full object-cover z-0 transform scale-[1.10] md:scale-105 pointer-events-none">
+            <source src="{{ asset('videos/klikbus lampung2.mp4') }}" type="video/mp4">
+        </video>
 
-        <div class="relative z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 z-10 pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-20 flex flex-col items-center text-center -mt-20">
             
-            <div class="w-full md:w-1/2 text-white text-center md:text-left fade-up" style="animation-delay: 0.2s">
-                <div class="mb-4">
-                    <h1 class="font-brand text-6xl md:text-8xl drop-shadow-lg text-yellow-400">
-                        KlikBus
-                    </h1>
-                    <h2 class="font-welcome text-4xl md:text-5xl mt-[-10px] text-white italic drop-shadow-md">
-                        Welcome!
-                    </h2>
-                </div>
+            <h1 class="text-7xl md:text-9xl font-black text-yellow-400 drop-shadow-[0_5px_10px_rgba(0,0,0,0.9)] mb-4 tracking-tighter">
+                KlikBus
+            </h1>
+            
+            <h2 class="text-2xl md:text-5xl font-bold text-white mb-8 italic drop-shadow-lg">
+                Solusi Perjalanan Nyaman se-Lampung
+            </h2>
+
+            <p class="text-lg md:text-2xl text-gray-100 max-w-3xl mb-16 leading-relaxed drop-shadow-md font-medium">
+                Pesan tiket bus tanpa antre. Cepat, aman, dan langsung dapat e-tiket.
+            </p>
+
+            <div class="flex flex-col md:flex-row gap-6 mb-24">
+                <a href="{{ route('login') }}" 
+                   class="px-12 py-6 bg-blue-600 border border-blue-400 hover:bg-blue-700 text-white font-black text-xl rounded-3xl shadow-[0_15px_25px_rgba(0,0,0,0.6)] transition transform hover:scale-105 active:scale-95">
+                    Mulai Pesan Tiket 🚌
+                </a>
                 
-                <p class="text-lg md:text-2xl font-semibold leading-relaxed mb-8 drop-shadow-md">
-                    Perjalanan antar kota di Lampung <br class="hidden md:block"> jadi lebih mudah dan cepat.
-                </p>
-
-                <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                    <span class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold border border-white/30">
-                        ✓ Simple & Fast
-                    </span>
-                    <span class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold border border-white/30">
-                        ✓ Safe & Reliable
-                    </span>
-                </div>
+                <a href="{{ route('rute.index') }}" 
+                   class="px-12 py-6 bg-black/40 backdrop-blur-md text-white font-bold text-xl rounded-3xl border border-white/50 hover:bg-black/60 transition shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+                    Lihat Rute
+                </a>
             </div>
-
-            <div class="w-full md:w-[450px] fade-up" style="animation-delay: 0.4s">
-                <div class="bg-white/80 backdrop-blur-xl border border-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl">
-                    <div class="text-center mb-8">
-                        <h3 class="text-gray-900 text-3xl font-black tracking-tight">Mulai Perjalanan</h3>
-                        <p class="text-gray-600 font-medium mt-2">Masuk untuk memesan tiket Anda</p>
-                    </div>
-
-                    <form action="{{ route('login') }}" method="POST" class="space-y-6">
-                        @csrf
-                        <div class="space-y-1">
-                            <label class="text-sm font-bold text-gray-700 ml-2">Email</label>
-                            <input type="email" name="email" placeholder="nama@email.com" required
-                                class="w-full bg-white border border-gray-200 px-6 py-4 rounded-2xl focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-semibold">
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="flex justify-between items-center px-2">
-                                <label class="text-sm font-bold text-gray-700">Password</label>
-                                <a href="#" class="text-xs text-blue-600 font-bold hover:underline">Lupa?</a>
-                            </div>
-                            <input type="password" name="password" placeholder="••••••••" required
-                                class="w-full bg-white border border-gray-200 px-6 py-4 rounded-2xl focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-semibold">
-                        </div>
-
-                        <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 hover:shadow-blue-500/50 text-white font-bold py-5 rounded-2xl shadow-xl transition-all transform active:scale-95 text-lg">
-                            Login Sekarang
-                        </button>
-                    </form>
-
-                    <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-                        <p class="text-gray-500 font-medium">
-                            Belum punya akun? 
-                            <a href="{{ route('register') }}" class="text-blue-600 font-black hover:underline ml-1">Daftar</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <div class="fixed bottom-6 text-white/70 text-xs font-bold tracking-widest uppercase z-10">
-            &copy; 2026 KlikBus Team Lampung.
+        <div class="absolute bottom-10 inset-x-0 w-full max-w-6xl mx-auto px-6 z-20">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                
+                <div class="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 text-white shadow-xl">
+                    <div class="text-2xl">⚡</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-base">Cepat</h3>
+                        <p class="text-xs opacity-80">Booking dalam 1 menit</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 text-white shadow-xl">
+                    <div class="text-2xl">🛡️</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-base">Aman</h3>
+                        <p class="text-xs opacity-80">Sistem terverifikasi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 text-white shadow-xl">
+                    <div class="text-2xl">🎫</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-base">E-Tiket</h3>
+                        <p class="text-xs opacity-80">Praktis tanpa kertas</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 text-white shadow-xl">
+                    <div class="text-2xl">📍</div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-base">Lokal</h3>
+                        <p class="text-xs opacity-80">Fokus area Lampung</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 

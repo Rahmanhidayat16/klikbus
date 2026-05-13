@@ -17,7 +17,7 @@ class BusController extends Controller
     // 2. Tampilkan Form Tambah
     public function create()
     {
-        return view('bus.create');
+        return view('admin.bus.create');
     }
 
     // 3. Simpan Bus Baru
@@ -30,10 +30,11 @@ class BusController extends Controller
             'total_seats.numeric' => 'Jumlah kursi harus berupa angka.',
         ];
 
-        $request->validate([
+       $request->validate([
             'bus_name' => 'required',
             'type' => 'required',
             'total_seats' => 'required|numeric',
+            'status' => 'required', 
         ], $pesan);
 
         Bus::create($request->all());
@@ -45,7 +46,7 @@ class BusController extends Controller
     public function edit($id)
     {
         $bus = Bus::findOrFail($id);
-        return view('bus.edit', compact('bus'));
+        return view('admin.bus.edit', compact('bus'));
     }
 
     // 5. Update Data Bus
@@ -62,6 +63,7 @@ class BusController extends Controller
             'bus_name' => 'required',
             'type' => 'required',
             'total_seats' => 'required|numeric',
+            'status' => 'required',
         ], $pesan);
 
         $bus = Bus::findOrFail($id);

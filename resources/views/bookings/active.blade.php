@@ -8,6 +8,9 @@
     {{-- HEADER --}}
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
+            <a href="{{ route('dashboard') }}" class="text-slate-400 hover:text-blue-600 font-bold text-sm flex items-center gap-2 transition-colors inline-block mb-4">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
             <h1 class="text-3xl font-black text-slate-900 mb-1">
                 Tiket Saya
             </h1>

@@ -34,7 +34,7 @@
             <div class="flex flex-col md:flex-row gap-6 mb-24">
                 <a href="{{ route('login') }}" 
                    class="px-12 py-5 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.4)] transition transform hover:-translate-y-1 active:scale-95 border-2 border-blue-500">
-                    Mulai Pesan Tiket 🚌
+                    Mulai Pesan Tiket
                 </a>
                 
                 <a href="{{ route('rute.index') }}" 

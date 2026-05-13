@@ -113,7 +113,7 @@
         <div class="kb-nav-item"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
       </a>
       <a href="{{ route('admin.bus.index') }}">
-        <div class="kb-nav-item active"><i class="ti ti-bus"></i> Kelola Bus <span class="kb-badge">12</span></div>
+        <div class="kb-nav-item active"><i class="ti ti-bus"></i> Kelola Bus <span class="kb-badge">{{ $semua_bus->count() }}</span></div>
       </a>
       <a href="{{ route('admin.routes.index') }}">
         <div class="kb-nav-item"><i class="ti ti-route"></i> Atur Rute <span class="kb-badge">8</span></div>
@@ -134,12 +134,17 @@
     </nav>
 
     <div class="kb-sidebar-footer">
-      <div class="kb-avatar">AD</div>
+      <div class="kb-avatar">RH</div>
       <div class="kb-profile-info">
-        <div class="kb-profile-name">Admin KlikBus</div>
+        <div class="kb-profile-name">Rahman Hidayat</div>
         <div class="kb-profile-role">Super Admin</div>
       </div>
-      <div class="kb-logout-btn"><i class="ti ti-logout"></i></div>
+     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+    @csrf
+    <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none; cursor:pointer;">
+        <i class="ti ti-logout"></i>
+    </button>
+</form>
     </div>
   </aside>
 
@@ -176,19 +181,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td><b>KlikBus Trans Lampung 01</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Metro Express 02</b></td><td><i class="ti ti-users"></i> 55 Kursi</td><td>Economy</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Kotabumi Raya 03</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Pringsewu Jaya 04</b></td><td><i class="ti ti-users"></i> 30 Kursi</td><td>Royal Class</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Bakauheni Fast 05</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Way Kanan 06</b></td><td><i class="ti ti-users"></i> 55 Kursi</td><td>Economy</td><td><span class="kb-status s-maintenance">Perbaikan</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Liwa Indah 07</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Mesuji Utama 08</b></td><td><i class="ti ti-users"></i> 55 Kursi</td><td>Economy</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Tulang Bawang 09</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Kalianda Star 10</b></td><td><i class="ti ti-users"></i> 30 Kursi</td><td>Royal Class</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Unit 2 Express 11</b></td><td><i class="ti ti-users"></i> 55 Kursi</td><td>Economy</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-              <tr><td><b>KlikBus Sukadana 12</b></td><td><i class="ti ti-users"></i> 40 Kursi</td><td>Executive</td><td><span class="kb-status s-active">Aktif</span></td><td style="text-align:right;"><i class="ti ti-edit"></i> <i class="ti ti-trash"></i></td></tr>
-            </tbody>
+  @foreach($semua_bus as $bus)
+  <tr>
+    <td><b>{{ $bus->bus_name }}</b></td>
+    <td><i class="ti ti-users"></i> {{ $bus->total_seats }} Kursi</td>
+    <td>{{ $bus->type }}</td>
+    <td>
+      <span class="kb-status {{ $bus->status === 'active' ? 's-active' : 's-maintenance' }}">
+        {{ $bus->status === 'active' ? 'Aktif' : 'Perbaikan' }}
+      </span>
+    </td>
+    <td style="text-align:right;">
+      <a href="{{ route('admin.bus.edit', $bus->id) }}"><i class="ti ti-edit"></i></a>
+      <form action="{{ route('admin.bus.destroy', $bus->id) }}" method="POST" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" style="background:none; border:none; cursor:pointer;" onclick="return confirm('Yakin hapus armada ini?')">
+          <i class="ti ti-trash"></i>
+        </button>
+      </form>
+    </td>
+  </tr>
+  @endforeach
+</tbody>
           </table>
         </div>
       </div>

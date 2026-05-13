@@ -9,13 +9,21 @@
                     </a>
                 </div>
 
+                {{-- Link Desktop: Posisinya wajib di dalam sini, Val! --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    {{-- Tambahin link Rute biar gampang aksesnya --}}
                     <x-nav-link :href="route('rute.index')" :active="request()->routeIs('rute.index')">
                         Daftar Rute
+                    </x-nav-link>
+                    {{-- ROUTE YANG BENER: Tiket Aktif --}}
+                    <x-nav-link :href="route('bookings.active')" :active="request()->routeIs('bookings.active')">
+                        Tiket Saya
+                    </x-nav-link>
+                    {{-- ROUTE YANG BENER: Riwayat Pesanan --}}
+                    <x-nav-link :href="route('history.index')" :active="request()->routeIs('history.index')">
+                        Riwayat Pesanan
                     </x-nav-link>
                 </div>
             </div>
@@ -69,19 +77,23 @@
         </div>
     </div>
 
-    {{-- Di bagian link desktop --}}
-<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-        {{ __('Dashboard') }}
-    </x-nav-link>
-    <x-nav-link :href="route('rute.index')" :active="request()->routeIs('rute.index')">
-        Daftar Rute
-    </x-nav-link>
-    {{-- INI YANG BARU --}}
-    <x-nav-link :href="route('bookings.history')" :active="request()->routeIs('bookings.history')">
-        Riwayat Pesanan
-    </x-nav-link>
-</div>
+    {{-- Menu Mobile --}}
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('rute.index')" :active="request()->routeIs('rute.index')">
+                Daftar Rute
+            </x-nav-link>
+            {{-- Tambahan di Mobile --}}
+            <x-responsive-nav-link :href="route('bookings.active')" :active="request()->routeIs('bookings.active')">
+                Tiket Saya
+            </x-nav-link>
+            <x-responsive-nav-link :href="route('history.index')" :active="request()->routeIs('history.index')">
+                Riwayat Pesanan
+            </x-nav-link>
+        </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
             @auth

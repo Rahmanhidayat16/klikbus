@@ -17,6 +17,7 @@ class Bus extends Model
         'bus_name',    // Bukan nama_bus
         'type',        // Bukan tipe
         'total_seats', // Bukan kapasitas
+        'status'
     ];
 
     // 3. Relasi ke Schedule (Satu bus punya banyak jadwal)

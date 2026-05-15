@@ -11,10 +11,13 @@ class ScheduleController extends Controller
 {
     // 1. Tampilkan Semua Jadwal
     public function index()
-{
-    $semua_jadwal = Schedule::with(['bus', 'route'])->get();
-    return view('admin.schedules.index', compact('semua_jadwal')); 
-}
+    {
+        // 1. Koki masak data: Ambil semua jadwal dari database, sekalian narik data bus & rute
+        $schedules = \App\Models\Schedule::with(['bus', 'route'])->latest()->get();
+        
+        // 2. Koki ngirim makanan: Buka halaman index dan bawa data $schedules tadi (pake compact)
+        return view('admin.schedules.index', compact('schedules'));
+    }
 
     // 2. Tampilkan Form Tambah
     public function create()
@@ -42,7 +45,7 @@ class ScheduleController extends Controller
 
         Schedule::create($request->all());
 
-       return redirect()->route('admin.schedules.index')->with('success', '...');
+       return redirect()->route('admin.schedules.index')->with('success', 'Jadwal Berhasil Ditambahkan!');
     }
 
     // 4. Tampilkan Form Edit

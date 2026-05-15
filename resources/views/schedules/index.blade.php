@@ -18,15 +18,21 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($schedules as $sch)
-        <tr>
-            <td>{{ $sch->bus->bus_name }}</td>
-            <td>{{ $sch->bus->type }}</td>
-            <td>{{ $sch->route->departure }} -> {{ $sch->route->destination }}</td>
-            <td>{{ $sch->departure_time }}</td>
-            <td>{{ $sch->arrival_time }}</td>
-            <td>{{ $sch->status }}</td>
-        </tr>
-        @endforeach
+        @foreach($schedules as $schedule)
+    <tr>
+      {{-- Ganti origin jadi departure --}}
+      <td>{{ $schedule->route->departure }} → {{ $schedule->route->destination }}</td>
+      
+      {{-- Ganti plate_number jadi bus_name --}}
+      <td>{{ $schedule->bus->bus_name }}</td>
+      
+      <td>{{ $schedule->departure_time }}</td>
+      
+      {{-- Kasih nilai default 0 kalau harganya kosong biar nggak error --}}
+      <td>Rp {{ number_format($schedule->price ?? 0) }}</td>
+      
+      <td><a href="#" class="btn btn-sm btn-warning">Edit</a></td>
+    </tr>
+    @endforeach
     </tbody>
 </table>

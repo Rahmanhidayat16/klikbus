@@ -41,8 +41,8 @@ Route::middleware([\App\Http\Middleware\IsAdmin::class])
     ->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
         Route::resource('bus', \App\Http\Controllers\BusController::class);
-        Route::resource('routes', \App\Http\Controllers\RouteController::class);
-        Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
+        Route::resource('routes', \App\Http\Controllers\Admin\RouteController::class);
+        Route::resource('schedules', \App\Http\Controllers\Admin\ScheduleController::class);
         Route::get('/reports/bookings', [BookingController::class, 'adminReport'])->name('reports.bookings');
     });
 

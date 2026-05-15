@@ -149,12 +149,22 @@
     <span class="kb-badge">{{ $semua_bus->count() }}</span>
   </div>
 </a>
-      <div class="kb-nav-item"><i class="ti ti-route"></i> Atur Rute <span class="kb-badge">8</span></div>
-      <div class="kb-nav-item"><i class="ti ti-calendar-event"></i> Jadwal</div>
+      <a href="{{ route('admin.routes.index') }}" style="text-decoration: none;">
+  <div class="kb-nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
+    <i class="ti ti-route"></i> Atur Rute
+    <span class="kb-badge">{{ $jumlah_rute }}</span>
+  </div>
+</a>
+      <a href="{{ route('admin.schedules.index') }}" style="text-decoration: none;">
+  <div class="kb-nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+    <i class="ti ti-calendar-event"></i> Jadwal
+    <span class="kb-badge">{{ $total_jadwal }}</span>
+  </div>
+</a>
 
       <div class="kb-nav-label">Laporan & Keuangan</div>
       <div class="kb-nav-item"><i class="ti ti-file-analytics"></i> Laporan Pemesanan</div>
-      <div class="kb-nav-item"><i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">124</span></div>
+      <div class="kb-nav-item"><i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">{{ $pesanan_hari_ini }}</span></div>
 
       <div class="kb-nav-label">Sistem</div>
       <div class="kb-nav-item"><i class="ti ti-users"></i> Pengguna</div>
@@ -189,22 +199,22 @@
       <div class="kb-stats">
         <div class="kb-stat-card">
           <div class="ic-blue" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-bus"></i></div>
-          <div class="kb-stat-val">12</div>
+          <div class="kb-stat-val">{{ $semua_bus->count() }}</div>
           <div class="kb-stat-lbl">Total Armada Bus</div>
         </div>
-        <div class="kb-stat-card">
-          <div class="ic-green" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-route"></i></div>
-          <div class="kb-stat-val">8</div>
+    <div class="kb-stat-card" style="cursor:pointer;" onclick="window.location='{{ route('admin.routes.index') }}'">
+      <div class="ic-green" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-route"></i></div>
+        <div class="kb-stat-val">{{ $jumlah_rute }}</div>
           <div class="kb-stat-lbl">Rute Aktif</div>
-        </div>
+      </div>
         <div class="kb-stat-card">
           <div class="ic-amber" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-ticket"></i></div>
-          <div class="kb-stat-val">124</div>
+          <div class="kb-stat-val">{{ $pesanan_hari_ini }}</div>
           <div class="kb-stat-lbl">Pesanan Hari Ini</div>
         </div>
         <div class="kb-stat-card">
           <div class="ic-purple" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-cash"></i></div>
-          <div class="kb-stat-val">Rp 48jt</div>
+          <div class="kb-stat-val">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</div>
           <div class="kb-stat-lbl">Pendapatan</div>
         </div>
       </div>
@@ -234,17 +244,46 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>#KB-2087</td><td>Rizky Aditya</td><td>Rajabasa → Bakauheni</td><td>Rp 45.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2086</td><td>Siti Nurhaliza</td><td>Rajabasa → Metro</td><td>Rp 25.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2085</td><td>Budi Santoso</td><td>Rajabasa → Unit 2</td><td>Rp 85.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2084</td><td>Dewi Kusuma</td><td>Rajabasa → Kotabumi</td><td>Rp 60.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2083</td><td>Ahmad Fauzi</td><td>Rajabasa → Pringsewu</td><td>Rp 30.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2082</td><td>Eko Prasetyo</td><td>Rajabasa → Kalianda</td><td>Rp 40.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2081</td><td>Fitri Handayani</td><td>Rajabasa → Way Kanan</td><td>Rp 95.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2080</td><td>Gilang Ramadhan</td><td>Rajabasa → Mesuji</td><td>Rp 110.000</td><td><span class="kb-status s-pending">Menunggu</span></td></tr>
-              <tr><td>#KB-2079</td><td>Hesti Purwanti</td><td>Rajabasa → Tulang Bawang</td><td>Rp 80.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-              <tr><td>#KB-2078</td><td>Indra Wijaya</td><td>Rajabasa → Liwa</td><td>Rp 120.000</td><td><span class="kb-status s-confirmed">Dikonfirmasi</span></td></tr>
-            </tbody>
+@forelse($pesanan_terbaru as $booking)
+<tr>
+
+    <td>#KB-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</td>
+
+    <td>
+        {{ $booking->user->name ?? 'User Tidak Ditemukan' }}
+    </td>
+
+    <td>
+        {{ $booking->schedule->route->departure ?? '-' }}
+        →
+        {{ $booking->schedule->route->destination ?? '-' }}
+    </td>
+
+    <td>
+        Rp {{ number_format($booking->total_price, 0, ',', '.') }}
+    </td>
+
+    <td>
+        <span class="kb-status 
+            {{ $booking->booking_status == 'confirmed'
+                ? 's-confirmed'
+                : 's-pending' }}">
+
+            {{ $booking->booking_status == 'confirmed'
+                ? 'Dikonfirmasi'
+                : 'Menunggu' }}
+        </span>
+    </td>
+
+</tr>
+@empty
+<tr>
+    <td colspan="5" style="text-align:center; padding:20px;">
+        Belum ada data pemesanan
+    </td>
+</tr>
+@endforelse
+</tbody>
           </table>
         </div>
       </div>
@@ -257,9 +296,9 @@
   new Chart(document.getElementById('lineChart'), {
     type: 'line',
     data: {
-      labels: ['Sen','Sel','Rab','Kam','Jum','Sab','Min'],
+      labels: @json($line_labels),
       datasets: [{
-        data: [18, 24, 21, 30, 28, 42, 38],
+        data: @json($line_data),
         borderColor: '#3b82f6',
         backgroundColor: 'rgba(59,130,246,0.05)',
         tension: 0.4,
@@ -272,9 +311,9 @@
   new Chart(document.getElementById('donutChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Bakauheni', 'Metro', 'Kotabumi', 'Lainnya'],
+      labels: @json($chart_labels),
       datasets: [{
-        data: [45, 30, 20, 29],
+        data: @json($chart_data),
         backgroundColor: ['#3b82f6','#6366f1','#10b981','#e5e7eb'],
         borderWidth: 2,
         borderColor: '#ffffff'

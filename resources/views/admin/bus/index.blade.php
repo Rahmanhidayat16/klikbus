@@ -119,7 +119,9 @@
         <div class="kb-nav-item"><i class="ti ti-route"></i> Atur Rute <span class="kb-badge">8</span></div>
       </a>
       <a href="{{ route('admin.schedules.index') }}">
-        <div class="kb-nav-item"><i class="ti ti-calendar-event"></i> Jadwal</div>
+        <div class="kb-nav-item"><i class="ti ti-calendar-event"></i> Jadwal
+        <span class="kb-badge">{{ $total_jadwal }}</span>
+      </div>
       </a>
 
       <div class="kb-nav-label">Laporan & Keuangan</div>

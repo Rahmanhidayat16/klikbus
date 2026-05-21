@@ -5,6 +5,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;       // <-- INI DITAMBAHIN
+use App\Http\Controllers\SettingController;    // <-- INI DITAMBAHIN
 
 // PUBLIC
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,10 +44,17 @@ Route::middleware([\App\Http\Middleware\IsAdmin::class])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
+        
         Route::resource('bus', \App\Http\Controllers\BusController::class);
         Route::resource('routes', \App\Http\Controllers\Admin\RouteController::class);
         Route::resource('schedules', \App\Http\Controllers\Admin\ScheduleController::class);
-        Route::get('/reports/bookings', [BookingController::class, 'adminReport'])->name('reports.bookings');
+        Route::get('/reports/booking', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+        
+        // --- INI YANG BIKIN ERROR TADI KARENA MENGHILANG ---
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');        
+        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 
 require __DIR__.'/auth.php';

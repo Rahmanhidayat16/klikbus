@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>KlikBus - Laporan Booking</title>
+  <title>KlikBus - Data Tiket Penumpang</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Sora:wght@400;600;700&display=swap');
 
@@ -29,13 +29,15 @@
     .kb-nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-size: 18px; color: var(--color-text-secondary); cursor: pointer; margin-bottom: 6px; transition: 0.2s; text-decoration: none; }
     .kb-nav-item.active { background: #1a1a2e; color: #fff; font-weight: 500; }
     .kb-nav-item:hover:not(.active) { background: #f9fafb; }
+    
+    .kb-badge { margin-left: auto; background: #eff6ff; color: #3b82f6; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+    .active .kb-badge { background: rgba(255,255,255,0.2); color: #fff; }
 
     /* SIDEBAR FOOTER */
     .kb-sidebar-footer { padding: 20px; border-top: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; }
     .kb-avatar { width: 42px; height: 42px; background: var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; }
     .kb-profile-info { flex: 1; overflow: hidden; }
     .kb-profile-name { font-size: 15px; font-weight: 600; color: #1a1a2e; }
-    .kb-logout-btn { color: #ef4444; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 8px; }
 
     /* MAIN CONTENT */
     .kb-main { flex: 1; display: flex; flex-direction: column; height: 100vh; }
@@ -55,6 +57,9 @@
     .kb-status { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-block;}
     .s-success { background: #f0fdf4; color: #16a34a; }
     .s-warning { background: #fffbeb; color: #d97706; }
+    
+    .btn-action { color: var(--accent-blue); background: #eff6ff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-block; transition: 0.2s; }
+    .btn-action:hover { background: #dbeafe; }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
@@ -73,26 +78,20 @@
       <a href="{{ route('admin.routes.index') }}" style="text-decoration: none;"><div class="kb-nav-item"><i class="ti ti-route"></i> Atur Rute</div></a>
       <a href="{{ route('admin.schedules.index') }}" style="text-decoration: none;"><div class="kb-nav-item"><i class="ti ti-calendar-event"></i> Jadwal</div></a>
 
-    <div class="kb-nav-label">Laporan & Keuangan</div>
-      
-      <a href="{{ route('admin.reports.index') }}" style="text-decoration: none;">
-        <div class="kb-nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-          <i class="ti ti-file-analytics"></i> Laporan Pemesanan
-        </div>
-      </a>
+      <div class="kb-nav-label">Laporan & Keuangan</div>
+      <a href="{{ route('admin.reports.index') }}" style="text-decoration: none;"><div class="kb-nav-item"><i class="ti ti-file-analytics"></i> Laporan Pemesanan</div></a>
       
       <a href="{{ route('admin.tickets.index') }}" style="text-decoration: none;">
-        <div class="kb-nav-item {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
-          <i class="ti ti-ticket"></i> Data Tiket
-          <span class="kb-badge">{{ $badge_pesanan ?? 0 }}</span>
-        </div>
+        <div class="kb-nav-item active"><i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">{{ $pesanan_hari_ini ?? 0 }}</span></div>
       </a>
-     <div class="kb-nav-label">Sistem</div>  
+      <div class="kb-nav-label">Sistem</div>
+      
       <a href="{{ route('admin.users.index') }}" style="text-decoration: none;">
         <div class="kb-nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
           <i class="ti ti-users"></i> Pengguna
         </div>
       </a>
+      
       <a href="{{ route('admin.settings.index') }}" style="text-decoration: none;">
         <div class="kb-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
           <i class="ti ti-settings"></i> Pengaturan
@@ -100,17 +99,16 @@
       </a>
     </nav>
 
-
-    <div class="kb-sidebar-footer">
+   <div class="kb-sidebar-footer">
       <div class="kb-avatar">RH</div>
       <div class="kb-profile-info">
         <div class="kb-profile-name">Rahman Hidayat</div>
         <div class="kb-profile-role">Super Admin</div>
       </div>
-      <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+      <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none; cursor:pointer;">
-            <i class="ti ti-logout"></i>
+        <button type="submit" style="background: none; border: none; cursor: pointer; color: #ef4444;">
+          <i class="ti ti-logout"></i>
         </button>
       </form>
     </div>
@@ -118,91 +116,79 @@
 
   <main class="kb-main">
     <div class="kb-topbar">
-      <div class="kb-topbar-title">LAPORAN PEMESANAN TIKET</div>
-      <div style="font-size: 16px; font-weight: 600; color: #16a34a; background: #f0fdf4; padding: 10px 20px; border-radius: 10px;">
-        Total Pendapatan: Rp {{ number_format($total_pendapatan ?? 0, 0, ',', '.') }}
-      </div>
+      <div class="kb-topbar-title">MASTER DATA TIKET</div>
     </div>
 
     <div class="kb-content">
       <div class="kb-table-container">
         
-        {{-- Kontrol Filter Atas --}}
+        {{-- Header & Fitur Pencarian --}}
         <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
           <div>
-            <div class="kb-card-title">Rincian Transaksi Pesanan</div>
-            <div class="kb-card-subtitle"><i class="ti ti-calendar"></i> Periode: <strong>{{ $label }}</strong></div>
+            <div class="kb-card-title">Daftar Tiket Penumpang</div>
+            <div class="kb-card-subtitle">Kelola dan verifikasi tiket perjalanan penumpang KlikBus.</div>
           </div>
           
-          {{-- Navigasi Tab Range Waktu --}}
-          <div style="display: flex; gap: 8px; background: #f3f4f6; padding: 6px; border-radius: 12px; border: 1px solid var(--color-border);">
-            <a href="{{ route('admin.reports.index', ['range' => 'today']) }}"
-               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; 
-                      background: {{ $range == 'today' ? 'var(--accent-blue)' : 'transparent' }}; 
-                      color: {{ $range == 'today' ? '#fff' : 'var(--color-text-secondary)' }};">
-              Hari Ini
-            </a>
-            
-            <a href="{{ route('admin.reports.index', ['range' => 'this_week']) }}"
-               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; 
-                      background: {{ $range == 'this_week' ? 'var(--accent-blue)' : 'transparent' }}; 
-                      color: {{ $range == 'this_week' ? '#fff' : 'var(--color-text-secondary)' }};">
-              Minggu Ini
-            </a>
-            
-            <a href="{{ route('admin.reports.index', ['range' => 'this_month']) }}"
-               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; 
-                      background: {{ $range == 'this_month' ? 'var(--accent-blue)' : 'transparent' }}; 
-                      color: {{ $range == 'this_month' ? '#fff' : 'var(--color-text-secondary)' }};">
-              Bulan Ini
-            </a>
-            
-            <a href="{{ route('admin.reports.index', ['range' => 'this_year']) }}"
-               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; 
-                      background: {{ $range == 'this_year' ? 'var(--accent-blue)' : 'transparent' }}; 
-                      color: {{ $range == 'this_year' ? '#fff' : 'var(--color-text-secondary)' }};">
-              Tahun Ini
-            </a>
-          </div>
+          {{-- KOTAK PENCARIAN --}}
+          <form action="{{ route('admin.tickets.index') }}" method="GET" style="display: flex; gap: 10px;">
+            <div style="position: relative;">
+              <i class="ti ti-search" style="position: absolute; left: 12px; top: 12px; color: var(--color-text-tertiary); font-size: 18px;"></i>
+              <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari ID atau Nama..." 
+                     style="padding: 10px 15px 10px 38px; border-radius: 10px; border: 1px solid var(--color-border); font-family: 'DM Sans'; outline: none; background: #f9fafb; min-width: 250px;">
+            </div>
+            <button type="submit" style="background: #1a1a2e; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s;">
+              Cari Data
+            </button>
+            @if($search)
+              <a href="{{ route('admin.tickets.index') }}" style="background: #fee2e2; color: #ef4444; text-decoration: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; display: flex; align-items: center;">Reset</a>
+            @endif
+          </form>
         </div>
 
-        {{-- Tabel Laporan Data --}}
+        {{-- Tabel Data Tiket --}}
         <div class="kb-table-scroll">
           <table class="kb-table">
             <thead>
               <tr>
-                <th>No</th>
-                <th>Nama Penumpang</th>
-                <th>Rute Perjalanan</th>
-                <th>No. Kursi</th>
-                <th>Total Bayar</th>
+                <th>ID Tiket</th>
+                <th>Tgl Pesan</th>
+                <th>Penumpang</th>
+                <th>Bus & Kursi</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              @forelse($bookings as $booking)
+              @forelse($tickets as $ticket)
               <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $booking->user->name ?? 'User Tidak Ditemukan' }}</td>
-                
+                <td><strong>#KB-{{ str_pad($ticket->id, 4, '0', STR_PAD_LEFT) }}</strong></td>
+                <td>{{ $ticket->created_at->format('d/m/Y') }}<br><small style="color: #6b7280;">{{ $ticket->created_at->format('H:i') }} WIB</small></td>
                 <td>
-                  <strong>{{ $booking->schedule->route->departure ?? '-' }}</strong> &rarr; 
-                  <strong>{{ $booking->schedule->route->destination ?? '-' }}</strong>
+                  <strong>{{ $ticket->user->name ?? 'User Dihapus' }}</strong><br>
+                  <small style="color: #6b7280;">{{ $ticket->schedule->route->departure ?? '-' }} &rarr; {{ $ticket->schedule->route->destination ?? '-' }}</small>
                 </td>
-                
-                <td>{{ $booking->seat_number ?? '-' }}</td>
-                <td style="font-weight: 600;">Rp {{ number_format($booking->total_price ?? 0, 0, ',', '.') }}</td>
                 <td>
-                  <span class="kb-status {{ $booking->booking_status == 'confirmed' ? 's-success' : 's-warning' }}">
-                    {{ $booking->booking_status == 'confirmed' ? 'Dikonfirmasi' : 'Menunggu' }}
+                  {{ $ticket->schedule->bus->bus_name ?? '-' }}<br>
+                  <span style="font-weight: 600; color: var(--accent-blue);">Kursi: {{ $ticket->seat_number ?? '-' }}</span>
+                </td>
+                <td>
+                  <span class="kb-status {{ $ticket->booking_status == 'confirmed' ? 's-success' : 's-warning' }}">
+                    {{ $ticket->booking_status == 'confirmed' ? 'Lunas' : 'Menunggu' }}
                   </span>
+                </td>
+                <td>
+                  <a href="#" class="btn-action"><i class="ti ti-eye"></i> Detail</a>
                 </td>
               </tr>
               @empty
               <tr>
-                <td colspan="6" style="text-align: center; padding: 40px; color: var(--color-text-tertiary);">
-                  <i class="ti ti-receipt-off" style="font-size: 32px; display: block; margin-bottom: 10px;"></i>
-                  Belum ada data pemesanan pada periode ini.
+                <td colspan="6" style="text-align: center; padding: 50px; color: var(--color-text-tertiary);">
+                  <i class="ti ti-ticket-off" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
+                  @if($search)
+                    Data tiket dengan kata kunci "<strong>{{ $search }}</strong>" tidak ditemukan.
+                  @else
+                    Belum ada data tiket yang tersimpan.
+                  @endif
                 </td>
               </tr>
               @endforelse

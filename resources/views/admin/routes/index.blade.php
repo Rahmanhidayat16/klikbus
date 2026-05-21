@@ -17,7 +17,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      width: 100vw; height: 100vh;
+      height: 100vh;
       overflow: hidden;
       font-family: 'DM Sans', sans-serif;
       background: #000;
@@ -30,6 +30,8 @@
       width: 280px; flex-shrink: 0;
       background: #fff; border-right: 1px solid var(--color-border);
       display: flex; flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
     .kb-logo {
       padding: 30px 24px; border-bottom: 1px solid var(--color-border);
@@ -68,14 +70,14 @@
     .kb-profile-role { font-size: 13px; color: var(--color-text-tertiary); }
 
     /* MAIN */
-    .kb-main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    .kb-main { flex: 1; display: flex; flex-direction: column; min-height: 0; height: 100%; overflow: hidden; }
     .kb-topbar {
       background: #fff; height: 75px; padding: 0 40px;
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid var(--color-border); flex-shrink: 0;
     }
     .kb-topbar-title { font-family: 'Sora', sans-serif; font-size: 25px; font-weight: 600; }
-    .kb-content { padding: 25px 40px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+    .kb-content { padding: 25px 40px; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 20px; }
 
     /* STATS */
     .kb-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; flex-shrink: 0; }
@@ -97,10 +99,21 @@
     .kb-card {
       background: #fff; border-radius: 18px;
       border: 1px solid var(--color-border); overflow: hidden;
+      display: flex; flex-direction: column;
+      flex: 1;
+      min-height: 540px;
     }
     .kb-card-header {
       padding: 20px 24px; display: flex; align-items: center;
       justify-content: space-between; border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .kb-card-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 24px 24px;
+      min-height: 0;
+      max-height: calc(100vh - 360px);
     }
     .kb-card-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; }
     .kb-card-sub { font-size: 13px; color: var(--color-text-tertiary); margin-top: 2px; }
@@ -214,34 +227,60 @@
     </div>
     <nav class="kb-nav">
       <div class="kb-nav-label">Utama</div>
-      <a href="{{ route('admin.dashboard') }}" class="kb-nav-item">
-        <i class="ti ti-layout-dashboard"></i> Dashboard
+      
+      <a href="{{ route('admin.dashboard') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+          <i class="ti ti-layout-dashboard"></i> Dashboard
+        </div>
       </a>
-      <a href="{{ route('admin.bus.index') }}" class="kb-nav-item">
-        <i class="ti ti-bus"></i> Kelola Bus
-        <span class="kb-badge">{{ \App\Models\Bus::count() }}</span>
+      
+      <a href="{{ route('admin.bus.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.bus.*') ? 'active' : '' }}">
+          <i class="ti ti-bus"></i> Kelola Bus 
+        </div>
       </a>
-      <a href="{{ route('admin.routes.index') }}" class="kb-nav-item active">
-        <i class="ti ti-route"></i> Atur Rute
-        <span class="kb-badge">{{ $routes->count() }}</span>
+      
+      <a href="{{ route('admin.routes.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
+          <i class="ti ti-route"></i> Atur Rute
+        </div>
       </a>
-      <a href="{{ route('admin.schedules.index') }}" class="kb-nav-item">
-        <i class="ti ti-calendar-event"></i> Jadwal
-        <span class="kb-badge">{{ $total_jadwal }}</span>
+      
+      <a href="{{ route('admin.schedules.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+          <i class="ti ti-calendar-event"></i> Jadwal
+        </div>
       </a>
 
       <div class="kb-nav-label">Laporan & Keuangan</div>
-      <a href="{{ route('admin.reports.bookings') }}" class="kb-nav-item">
-        <i class="ti ti-file-analytics"></i> Laporan Pemesanan
+      
+      <a href="{{ route('admin.reports.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+          <i class="ti ti-file-analytics"></i> Laporan Pemesanan
+        </div>
       </a>
-      <div class="kb-nav-item">
-        <i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">124</span>
-      </div>
+      
+      <a href="{{ route('admin.tickets.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
+          <i class="ti ti-ticket"></i> Data Tiket
+        </div>
+      </a>
 
       <div class="kb-nav-label">Sistem</div>
-      <div class="kb-nav-item"><i class="ti ti-users"></i> Pengguna</div>
-      <div class="kb-nav-item"><i class="ti ti-settings"></i> Pengaturan</div>
+      
+      <a href="{{ route('admin.users.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+          <i class="ti ti-users"></i> Pengguna
+        </div>
+      </a>
+      
+      <a href="{{ route('admin.settings.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+          <i class="ti ti-settings"></i> Pengaturan
+        </div>
+      </a>
     </nav>
+
     <div class="kb-sidebar-footer">
       <div class="kb-avatar">RH</div>
       <div class="kb-profile-info">
@@ -250,8 +289,8 @@
       </div>
       <form method="POST" action="{{ route('logout') }}" style="display:inline;">
         @csrf
-        <button type="submit" style="background:none; border:none; cursor:pointer; color:#ef4444; font-size:20px; padding:8px; border-radius:8px;">
-          <i class="ti ti-logout"></i>
+        <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none; cursor:pointer;">
+            <i class="ti ti-logout"></i>
         </button>
       </form>
     </div>
@@ -313,14 +352,14 @@
             <i class="ti ti-plus"></i> Tambah Rute
           </button>
         </div>
-
-        @if($routes->isEmpty())
-          <div class="empty-state">
-            <i class="ti ti-route-off"></i>
-            <p>Belum ada rute yang ditambahkan.</p>
-          </div>
-        @else
-          <table class="kb-table">
+        <div class="kb-card-body">
+          @if($routes->isEmpty())
+            <div class="empty-state">
+              <i class="ti ti-route-off"></i>
+              <p>Belum ada rute yang ditambahkan.</p>
+            </div>
+          @else
+            <table class="kb-table">
             <thead>
               <tr>
                 <th>#</th>

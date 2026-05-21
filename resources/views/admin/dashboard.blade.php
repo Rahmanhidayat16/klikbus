@@ -142,33 +142,56 @@
     </div>
     <nav class="kb-nav">
       <div class="kb-nav-label">Utama</div>
-      <div class="kb-nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-    <a href="{{ route('admin.bus.index') }}" style="text-decoration: none;">
-  <div class="kb-nav-item {{ request()->routeIs('admin.bus.*') ? 'active' : '' }}">
-    <i class="ti ti-bus"></i> Kelola Bus 
-    <span class="kb-badge">{{ $semua_bus->count() }}</span>
-  </div>
-</a>
+      <a href="{{ route('admin.dashboard') }}" style="text-decoration: none;">
+        <div class="kb-nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      </a>
+      <a href="{{ route('admin.bus.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.bus.*') ? 'active' : '' }}">
+          <i class="ti ti-bus"></i> Kelola Bus 
+          <span class="kb-badge">{{ $semua_bus->count() }}</span>
+        </div>
+      </a>
       <a href="{{ route('admin.routes.index') }}" style="text-decoration: none;">
-  <div class="kb-nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
-    <i class="ti ti-route"></i> Atur Rute
-    <span class="kb-badge">{{ $jumlah_rute }}</span>
-  </div>
-</a>
+        <div class="kb-nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
+          <i class="ti ti-route"></i> Atur Rute
+          <span class="kb-badge">{{ $jumlah_rute }}</span>
+        </div>
+      </a>
       <a href="{{ route('admin.schedules.index') }}" style="text-decoration: none;">
-  <div class="kb-nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
-    <i class="ti ti-calendar-event"></i> Jadwal
-    <span class="kb-badge">{{ $total_jadwal }}</span>
-  </div>
-</a>
+        <div class="kb-nav-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+          <i class="ti ti-calendar-event"></i> Jadwal
+          <span class="kb-badge">{{ $total_jadwal }}</span>
+        </div>
+      </a>
 
       <div class="kb-nav-label">Laporan & Keuangan</div>
-      <div class="kb-nav-item"><i class="ti ti-file-analytics"></i> Laporan Pemesanan</div>
-      <div class="kb-nav-item"><i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">{{ $pesanan_hari_ini }}</span></div>
+      
+      <a href="{{ route('admin.reports.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+          <i class="ti ti-file-analytics"></i> Laporan Pemesanan
+        </div>
+      </a>
+      
+      {{-- INI YANG UDAH DIBENERIN BIAR BISA DIKLIK --}}
+      <a href="{{ route('admin.tickets.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
+          <i class="ti ti-ticket"></i> Data Tiket <span class="kb-badge">{{ $pesanan_hari_ini }}</span>
+        </div>
+      </a>
 
       <div class="kb-nav-label">Sistem</div>
-      <div class="kb-nav-item"><i class="ti ti-users"></i> Pengguna</div>
-      <div class="kb-nav-item"><i class="ti ti-settings"></i> Pengaturan</div>
+      
+      <a href="{{ route('admin.users.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+          <i class="ti ti-users"></i> Pengguna
+        </div>
+      </a>
+      
+      <a href="{{ route('admin.settings.index') }}" style="text-decoration: none;">
+        <div class="kb-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+          <i class="ti ti-settings"></i> Pengaturan
+        </div>
+      </a>
     </nav>
 
     <div class="kb-sidebar-footer">
@@ -178,11 +201,11 @@
         <div class="kb-profile-role">Super Admin</div>
       </div>
       <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-    @csrf
-    <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none; cursor:pointer;">
-        <i class="ti ti-logout"></i>
-    </button>
-</form>
+        @csrf
+        <button type="submit" class="kb-logout-btn" title="Keluar" style="background:none; border:none; cursor:pointer;">
+            <i class="ti ti-logout"></i>
+        </button>
+      </form>
     </div>
   </aside>
 
@@ -202,11 +225,11 @@
           <div class="kb-stat-val">{{ $semua_bus->count() }}</div>
           <div class="kb-stat-lbl">Total Armada Bus</div>
         </div>
-    <div class="kb-stat-card" style="cursor:pointer;" onclick="window.location='{{ route('admin.routes.index') }}'">
-      <div class="ic-green" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-route"></i></div>
-        <div class="kb-stat-val">{{ $jumlah_rute }}</div>
+        <div class="kb-stat-card" style="cursor:pointer;" onclick="window.location='{{ route('admin.routes.index') }}'">
+          <div class="ic-green" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-route"></i></div>
+          <div class="kb-stat-val">{{ $jumlah_rute }}</div>
           <div class="kb-stat-lbl">Rute Aktif</div>
-      </div>
+        </div>
         <div class="kb-stat-card">
           <div class="ic-amber" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="ti ti-ticket"></i></div>
           <div class="kb-stat-val">{{ $pesanan_hari_ini }}</div>

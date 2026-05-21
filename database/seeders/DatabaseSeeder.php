@@ -72,5 +72,23 @@ class DatabaseSeeder extends Seeder
             'arrival_time' => '2026-05-10 13:00:00',
             'status' => 'scheduled',
         ]);
+
+        // Data awal metode pembayaran KlikBus
+        \App\Models\PaymentMethod::insert([
+            [
+                'name' => 'QRIS (Gopay / DANA / ShopeePay)',
+                'code' => 'qris',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Virtual Account (Transfer Bank)',
+                'code' => 'va',
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
